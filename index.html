@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="fr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#244c3b"><title>Curio — Culture générale</title><link rel="stylesheet" href="./style.css"><script src="./app.js" defer></script></head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="./">curio<span>✳</span></a><p class="brand-caption">UN PEU PLUS CURIEUX, CHAQUE JOUR.</p>
+  <button id="home" class="nav active">◫ &nbsp; Ma bibliothèque</button><button id="favorites" class="nav">☆ &nbsp; Mes favoris</button>
+  <div class="section-label">MES SUJETS <button id="add-topic-side" aria-label="Créer un sujet">+</button></div><nav id="topics"></nav>
+  <div class="sidebar-bottom"><p>Ton petit monde de connaissances.</p><button id="export" class="nav">↓ &nbsp; Exporter ma bibliothèque</button><button id="import" class="nav">↑ &nbsp; Importer une sauvegarde</button><span id="save-status" role="status">Chargement…</span></div>
+</aside>
+<main>
+  <header><div class="breadcrumb" id="breadcrumb">Mon espace / Bibliothèque</div><label class="search"><span>⌕</span><input id="search" type="search" placeholder="Rechercher dans mes connaissances…" aria-label="Rechercher"></label></header>
+  <div id="notice" role="alert" hidden></div><section id="view"></section>
+</main>
+<dialog id="topic-dialog"><form id="topic-form"><span class="eyebrow">UNE NOUVELLE CURIOSITÉ</span><h2 id="dialog-title">Créer un sujet</h2><label>Nom du sujet<input name="title" required maxlength="100" placeholder="Ex. Civilisations anciennes"></label><label>Une petite description<textarea name="description" rows="3" maxlength="300" placeholder="Ce que tu aimerais explorer…"></textarea></label><label>Couleur<select name="color"><option value="sage">Sauge</option><option value="sand">Sable</option><option value="blue">Bleu</option><option value="rose">Rose</option><option value="lavender">Lavande</option></select></label><div class="dialog-actions"><button type="button" id="cancel-dialog" class="secondary">Annuler</button><button class="primary">Enregistrer</button></div></form></dialog>
+<input id="image-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+<input id="import-input" type="file" accept="application/json,.json" hidden>
+</body></html>

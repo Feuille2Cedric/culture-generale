@@ -1,0 +1,6 @@
+__pycache__/
+data/
+_site/
+*.log
+test-results/
+.test-tools/
