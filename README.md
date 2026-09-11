@@ -2,6 +2,12 @@
 
 Application web personnelle, en français, compatible GitHub Pages. Aucun compte ni installation nécessaire pour l’utiliser. Sujets personnalisés, pages à blocs (texte, titres, citations, images, liens), déplacement des blocs, disposition des images, recherche intégrale, favoris et corbeille pour les pages.
 
+## Trois formats et deux modes
+
+Chaque sujet contient trois sections : **Infos rapides**, **Sujets approfondis** et **Citations**. L’accueil permet aussi de retrouver chaque format à travers tous les sujets. Le format se choisit à la création et se change dans l’éditeur. Les anciennes pages et sauvegardes sans format sont considérées comme des sujets approfondis, sans modifier leur contenu.
+
+Une connaissance s’ouvre en lecture : fiche compacte pour une info, article avec sommaire dès deux titres de section pour un sujet approfondi, présentation typographique et auteur/source pour une citation. **Modifier** ouvre l’éditeur par blocs. **Enregistrer**, en bas de l’éditeur, attend la réussite de la sauvegarde avant de revenir à la lecture. La sauvegarde automatique reste active pendant l’édition ; le bouton termine la session d’écriture, il ne sert pas à publier les données en ligne. Si l’enregistrement échoue, l’éditeur reste ouvert avec les modifications.
+
 ## Démarrer localement
 
 Depuis ce dossier : `python -m http.server 3355 --bind 127.0.0.1`, puis ouvrir http://127.0.0.1:3355. Ne pas ouvrir directement index.html en file://.
