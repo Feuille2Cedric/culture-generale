@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="fr">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#244c3b"><title>Curio — Culture générale</title><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="stylesheet" href="./style.css"><script src="./app.js" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#244c3b"><title>Curio — Culture générale</title><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="stylesheet" href="./style.css"><script src="./categories.js" defer></script><script src="./app.js" defer></script></head>
 <body>
 <aside class="sidebar">
   <a class="brand" href="./">curio<span>✳</span></a><p class="brand-caption">UN PEU PLUS CURIEUX, CHAQUE JOUR.</p>
@@ -14,5 +14,6 @@
 </main>
 <dialog id="topic-dialog"><form id="topic-form"><span class="eyebrow">UNE NOUVELLE CURIOSITÉ</span><h2 id="dialog-title">Créer un sujet</h2><label>Nom du sujet<input name="title" required maxlength="100" placeholder="Ex. Civilisations anciennes"></label><label>Une petite description<textarea name="description" rows="3" maxlength="300" placeholder="Ce que tu aimerais explorer…"></textarea></label><label>Couleur<select name="color"><option value="sage">Sauge</option><option value="sand">Sable</option><option value="blue">Bleu</option><option value="rose">Rose</option><option value="lavender">Lavande</option></select></label><div class="dialog-actions"><button type="button" id="cancel-dialog" class="secondary">Annuler</button><button class="primary">Enregistrer</button></div></form></dialog>
 <input id="image-input" type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+<dialog id="category-dialog"><form id="category-form"><span class="eyebrow">UNE PLACE POUR CHAQUE DÉCOUVERTE</span><h2 id="category-dialog-title">Créer une sous-catégorie</h2><label for="category-name">Nom de la sous-catégorie</label><input id="category-name" required maxlength="100" placeholder="Ex. Acteurs, Films, Albums…"><div class="dialog-actions"><button id="category-cancel" type="button" class="secondary">Annuler</button><button type="submit" class="primary">Enregistrer</button></div></form></dialog>
 <input id="import-input" type="file" accept="application/json,.json" hidden>
 </body></html>

@@ -37,6 +37,18 @@ Crée tes propres thèmes, compose tes pages avec des textes, des images et des 
 
 Chaque sujet possède ces trois sections. Depuis l’accueil, retrouve aussi **toutes tes infos rapides**, **tous tes sujets approfondis** ou **toutes tes citations**, quel que soit leur thème.
 
+### Des sous-catégories à ta façon
+
+Organise un sujet sans mélanger ses différentes facettes : **Cinéma → Acteurs, Films**, **Musique → Albums, Ballets, Singles**, ou toute autre sous-catégorie de ton choix.
+
+Dans un sujet, **+ Sous-catégorie** crée un nouveau classement. Les filtres permettent ensuite de consulter toutes les connaissances, une sous-catégorie ou les pages **Non classées**. Les trois formats restent disponibles dans chaque filtre. Une page créée depuis un filtre est automatiquement rangée dans cette sous-catégorie.
+
+Le classement se modifie aussi dans l’éditeur. Tu peux renommer ou supprimer une sous-catégorie : ses pages restent conservées et redeviennent non classées. Déplacer une page vers un autre sujet réinitialise sa sous-catégorie pour éviter un classement incohérent.
+
+Les sous-catégories sont sauvegardées et incluses dans les exports/imports. Pour les pages Notion converties avec leurs métadonnées d’origine, les anciennes sous-rubriques sont récupérées automatiquement, sans modifier leurs textes. Les anciens exports Curio restent compatibles.
+
+![Un sujet avec ses sous-catégories et ses filtres](docs/sous-categories.png)
+
 ![Une citation dans la vue de lecture de Curio](docs/lecture.png)
 
 ## De la curiosité à la connaissance
@@ -134,7 +146,7 @@ Ouvre ensuite **http://127.0.0.1:3355**. Utilise le serveur local plutôt qu’u
 2. Dans **Settings → Pages → Build and deployment → Source**, sélectionne **GitHub Actions**.
 3. Lance le workflow **Deploy Curio to GitHub Pages**, ou pousse un commit sur `main`.
 
-Le [workflow inclus](.github/workflows/pages.yml) publie `index.html`, `app.js`, `style.css` et `favicon.svg`. Les chemins relatifs fonctionnent sous l’adresse d’un dépôt GitHub Pages. Aucun build JavaScript ni serveur applicatif n’est nécessaire.
+Le [workflow inclus](.github/workflows/pages.yml) publie `index.html`, `app.js`, `categories.js`, `style.css` et `favicon.svg`. Les chemins relatifs fonctionnent sous l’adresse d’un dépôt GitHub Pages. Aucun build JavaScript ni serveur applicatif n’est nécessaire.
 
 ## Sous le capot
 
@@ -151,11 +163,13 @@ Le [workflow inclus](.github/workflows/pages.yml) publie `index.html`, `app.js`,
 culture-generale/
 ├── index.html              Structure de l’application
 ├── app.js                  Édition, lecture, tri et stockage
+├── categories.js           Sous-catégories et reprise des classements Notion
 ├── style.css               Identité visuelle et affichage mobile
 ├── favicon.svg             Icône Curio
 ├── docs/                   Visuels du README avec contenus de démonstration
 ├── test_app.py             Parcours, sauvegardes et compatibilité
 ├── test_sort.py            Tri et captures de démonstration
+├── test_categories.py      Classement, filtres et compatibilité des sauvegardes
 └── .github/workflows/
     └── pages.yml           Publication automatique
 ```
@@ -168,6 +182,7 @@ Les tests utilisent un navigateur isolé et des données de démonstration. Ils 
 python -m pip install playwright
 python test_app.py
 python test_sort.py
+python test_categories.py
 ```
 
 Les scripts sont actuellement configurés pour **Google Chrome sous Windows**, au chemin `C:\Program Files\Google\Chrome\Application\chrome.exe`. Adapte `executable_path` si ton installation diffère. `test_sort.py` régénère les captures du dossier `docs/`.
