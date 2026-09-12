@@ -4,7 +4,9 @@ function planSupplement(current, data) {
  const result=structuredClone(current),images={},topicMap=new Map(),categoryMap=new Map(),imageMap=new Map();
  const key=value=>value.trim().normalize('NFC').toLocaleLowerCase('fr');
  const knownPages=new Set(result.pages.map(p=>p.id));
- const incoming=data.library.pages.filter(p=>!knownPages.has(p.id));
+ const fingerprint=(p,topics)=>JSON.stringify([key(topics.find(t=>t.id===p.topic)?.title||''),p.title,p.kind||'article',p.author||'',p.blocks.map(({type,text,url,layout})=>({type,text,url,layout}))]);
+ const knownContent=new Set(result.pages.map(p=>fingerprint(p,result.topics)));
+ const incoming=data.library.pages.filter(p=>!knownPages.has(p.id)&&!knownContent.has(fingerprint(p,data.library.topics)));
  let added=0;
  for(const source of data.library.topics){
   if(!incoming.some(p=>p.topic===source.id))continue;
@@ -44,6 +46,43 @@ async function importSupplement(data){
  const plan=planSupplement(library,data);
  if(!plan.added){notice('Ce complément est déjà présent. Aucune page ajoutée.');return;}
  if(!confirm(`Ajouter ${plan.added} nouvelles connaissances à tes thèmes ? Tes pages actuelles seront conservées. Les pages de ce complément déjà présentes seront ignorées.`))return;
+ await commitSupplementPlan(plan);
+}
+
+function planTopicRepair(current){
+ const result=structuredClone(current),names=new Map(),mapping=new Map(),topics=[];
+ const key=s=>s.trim().normalize('NFC').toLocaleLowerCase('fr');
+ for(const source of result.topics){
+  let target=names.get(key(source.title));
+  if(!target){target=source;names.set(key(source.title),target);topics.push(target);}
+  const categories=new Map();
+  for(const category of source.categories||[]){
+   target.categories??=[];
+   let match=target.categories.find(c=>key(c.title)===key(category.title));
+   if(!match){match=structuredClone(category);target.categories.push(match);}
+   categories.set(category.id,match.id);
+  }
+  if(target!==source&&source.description&&source.description!==target.description){
+   target.description=[target.description,source.description].filter(Boolean).join('\n\n');
+  }
+  mapping.set(source.id,{id:target.id,categories});
+ }
+ for(const p of result.pages){const target=mapping.get(p.topic);p.topic=target.id;if(p.category)p.category=target.categories.get(p.category)||p.category;}
+ const merged=result.topics.length-topics.length;result.topics=topics;
+ return {library:result,images:{},merged,added:0,skipped:0};
+}
+
+async function repairDuplicateTopics(){
+ try{
+  if(!ready||!await save())return;
+  const plan=planTopicRepair(library);
+  if(!plan.merged){notice('Aucun sujet en double.');return;}
+  if(!confirm(`Regrouper ${plan.merged} sujets en double ? Toutes les pages et images seront conservées. Les sous-catégories de même nom seront réunies.`))return;
+  await commitSupplementPlan(plan);
+ }catch(e){notice(e.message||'Impossible de regrouper les sujets.');}
+}
+
+async function commitSupplementPlan(plan){
  // Freeze interaction and pause sync while committing pages and images atomically.
  const nodes=[...document.querySelectorAll('main,aside')],inert=nodes.map(n=>n.inert),sync=window.curioSync;
  const priorBusy=sync?.busy;
@@ -55,11 +94,12 @@ async function importSupplement(data){
   const stored=await req(store.get('library'));
   if((stored?.revision||0)!==revision){tx.abort();try{await wait;}catch{}throw Error('Une autre fenêtre a modifié la bibliothèque. Recharge avant de réessayer.');}
   const next=revision+1;
+  if(plan.merged)store.put({library:structuredClone(library),revision},'before-topic-repair');
   store.put({library:plan.library,revision:next},'library');
   for(const [id,image] of Object.entries(plan.images))tx.objectStore('images').put(image,id);
   await wait;library=plan.library;revision=next;
   status('● Enregistré dans ce navigateur');navigate('home');
-  notice(`${plan.added} connaissances ajoutées à tes thèmes. ${plan.skipped} déjà présente(s), ignorée(s).`);
+  notice(plan.merged?`${plan.merged} sujets regroupés. Toutes tes pages et images sont conservées.`:`${plan.added} connaissances ajoutées à tes thèmes. ${plan.skipped} déjà présente(s), ignorée(s).`);
   sync?.mark();
  }finally{
   if(sync)sync.busy=false;

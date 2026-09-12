@@ -112,6 +112,8 @@ Pour configurer une autre installation : **[guide Supabase](sync/SETUP.md)**.
 
 Les **compléments Curio** ajoutent leurs connaissances aux sujets existants et conservent tes pages. Leurs sous-catégories sont fusionnées et les pages du complément déjà importées sont ignorées. Les pages et leurs images sont enregistrées ensemble : en cas d’échec, aucun ajout partiel n’est conservé. Ils s’importent avec le même bouton **Importer**.
 
+Si un ancien import a créé des sujets en double, utilise **Regrouper les sujets en double** dans la barre latérale. Les sujets et sous-catégories de même nom sont réunis, sans supprimer de page ni d’image. Une copie de la bibliothèque avant regroupement est conservée dans le stockage local. Les compléments reconnaissent aussi leurs pages importées par l’ancien importeur, même si leurs identifiants ont changé.
+
 <details>
 <summary><strong>Formats, limites et compatibilité</strong></summary>
 
