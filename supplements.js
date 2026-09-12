@@ -84,26 +84,96 @@ async function repairDuplicateTopics(){
 
 async function commitSupplementPlan(plan){
  // Freeze interaction and pause sync while committing pages and images atomically.
+ // Selecting an import file gives focus back to the window, which can start a sync
+ // cycle at the exact same time. Wait for that cycle instead of rejecting the import.
  const nodes=[...document.querySelectorAll('main,aside')],inert=nodes.map(n=>n.inert),sync=window.curioSync;
- const priorBusy=sync?.busy;
- if(priorBusy)throw Error('Une synchronisation est en cours. Réessaie l’import dans quelques instants.');
- if(sync)sync.busy=true;
+
+ if(sync){
+  const deadline=Date.now()+30000;
+
+  while(sync.busy){
+   if(Date.now()>=deadline){
+    throw Error('La synchronisation prend trop de temps. Réessaie l’import dans quelques instants.');
+   }
+
+   await new Promise(resolve=>setTimeout(resolve,100));
+  }
+
+  // Claim the sync flag synchronously before another focus/interval cycle can start.
+  sync.busy=true;
+ }
+
  nodes.forEach(n=>n.inert=true);
+
  try{
-  const tx=db.transaction(['state','images'],'readwrite'),wait=done(tx),store=tx.objectStore('state');
+  const tx=db.transaction(['state','images'],'readwrite'),
+        wait=done(tx),
+        store=tx.objectStore('state');
+
   const stored=await req(store.get('library'));
-  if((stored?.revision||0)!==revision){tx.abort();try{await wait;}catch{}throw Error('Une autre fenêtre a modifié la bibliothèque. Recharge avant de réessayer.');}
+
+  if((stored?.revision||0)!==revision){
+   tx.abort();
+
+   try{
+    await wait;
+   }catch{}
+
+   throw Error('Une autre fenêtre a modifié la bibliothèque. Recharge avant de réessayer.');
+  }
+
   const next=revision+1;
-  if(plan.merged)store.put({library:structuredClone(library),revision},'before-topic-repair');
-  store.put({library:plan.library,revision:next},'library');
-  for(const [id,image] of Object.entries(plan.images))tx.objectStore('images').put(image,id);
-  await wait;library=plan.library;revision=next;
-  status('● Enregistré dans ce navigateur');navigate('home');
-  notice(plan.merged?`${plan.merged} sujets regroupés. Toutes tes pages et images sont conservées.`:`${plan.added} connaissances ajoutées à tes thèmes. ${plan.skipped} déjà présente(s), ignorée(s).`);
+
+  if(plan.merged){
+   store.put(
+    {
+     library:structuredClone(library),
+     revision
+    },
+    'before-topic-repair'
+   );
+  }
+
+  store.put(
+   {
+    library:plan.library,
+    revision:next
+   },
+   'library'
+  );
+
+  for(const [id,image] of Object.entries(plan.images)){
+   tx.objectStore('images').put(image,id);
+  }
+
+  await wait;
+
+  library=plan.library;
+  revision=next;
+
+  status('● Enregistré dans ce navigateur');
+  navigate('home');
+
+  notice(
+   plan.merged
+    ? `${plan.merged} sujets regroupés. Toutes tes pages et images sont conservées.`
+    : `${plan.added} connaissances ajoutées à tes thèmes. ${plan.skipped} déjà présente(s), ignorée(s).`
+  );
+
   sync?.mark();
+
  }finally{
-  if(sync)sync.busy=false;
-  nodes.forEach((n,i)=>n.inert=inert[i]);
-  if(sync?.meta.owner&&sync.meta.owner!==sync.user?.id)sync.lock(true);
+
+  if(sync){
+   sync.busy=false;
+  }
+
+  nodes.forEach((n,i)=>{
+   n.inert=inert[i];
+  });
+
+  if(sync?.meta.owner&&sync.meta.owner!==sync.user?.id){
+   sync.lock(true);
+  }
  }
 }
