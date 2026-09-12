@@ -22,6 +22,8 @@ jobs:
         run: |
           mkdir _site
           cp index.html app.js categories.js style.css favicon.svg _site/
+          mkdir _site/sync
+          cp sync/config.js sync/supabase.js sync/sync.js sync/adapter.js sync/sync.css _site/sync/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

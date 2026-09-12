@@ -9,7 +9,7 @@ Rassemble ce qui t’intrigue. Écris à ton rythme. Retrouve le plaisir de reli
 [![Ouvrir Curio](https://img.shields.io/badge/Ouvrir_Curio-244c3b?style=for-the-badge&logo=github&logoColor=white)](https://feuille2cedric.github.io/culture-generale/)
 [![Déploiement](https://github.com/Feuille2Cedric/culture-generale/actions/workflows/pages.yml/badge.svg)](https://github.com/Feuille2Cedric/culture-generale/actions/workflows/pages.yml)
 
-**En français** &nbsp; · &nbsp; **Sans compte** &nbsp; · &nbsp; **Ordinateur & mobile** &nbsp; · &nbsp; **Tes contenus dans ton navigateur**
+**En français** &nbsp; · &nbsp; **Ordinateur & mobile** &nbsp; · &nbsp; **Synchronisation privée** &nbsp; · &nbsp; **Compte facultatif**
 
 [Découvrir](#un-petit-monde-de-connaissances) · [Prendre en main](#de-la-curiosité-à-la-connaissance) · [Sauvegarder](#tes-contenus-restent-à-toi) · [Installer](#faire-tourner-curio)
 
@@ -82,15 +82,19 @@ La bibliothèque, les commandes de tri et les pages s’adaptent aux petits écr
 
 <img src="docs/mobile.png" alt="La bibliothèque Curio et son sélecteur de tri sur mobile" width="340">
 
-L’accès au site est possible sur plusieurs appareils ; les données de chaque navigateur restent indépendantes. Pour transférer ta bibliothèque, utilise l’export et l’import.
+Connecte-toi avec la même adresse e-mail sur chaque appareil pour retrouver tes sujets, sous-catégories, pages, favoris et images. Commence par le navigateur qui contient déjà ta bibliothèque, puis attends **✓ Synchronisé** avant d’ouvrir Curio ailleurs. Le tri reste une préférence propre à chaque navigateur.
 
 </details>
 
 ## Tes contenus restent à toi
 
-**GitHub Pages héberge l’application. Ton navigateur conserve ta bibliothèque.**
+**GitHub Pages héberge l’application. Supabase synchronise ta bibliothèque privée.**
 
-Les sujets et les pages sont enregistrés dans **IndexedDB** ; les images sont stockées séparément dans la même base. Aucun compte ni serveur de données n’est nécessaire. Les contenus saisis dans l’application ne sont pas envoyés au dépôt GitHub.
+Les sujets, les pages et les images restent enregistrés dans **IndexedDB** pour conserver les changements en cas de coupure réseau. Sans connexion à un compte, Curio fonctionne localement. Avec un compte, les données rejoignent des tables privées Supabase et les images un espace privé séparé. Les contenus saisis ne sont jamais envoyés au dépôt GitHub.
+
+La synchronisation se déclenche après les modifications, une fois l’éditeur fermé, puis vérifie les changements des autres appareils toutes les 15 secondes tant que la page est ouverte. Des changements sur des champs différents sont fusionnés ; un conflit sur le même contenu demande un choix après export des deux versions. Les 20 versions précédentes du document sont conservées dans la base. Une déconnexion masque la bibliothèque locale jusqu’à la reconnexion au même compte.
+
+Pour configurer une autre installation : **[guide Supabase](sync/SETUP.md)**.
 
 | Action | Ce qu’elle fait |
 | :-- | :-- |
@@ -101,7 +105,7 @@ Les sujets et les pages sont enregistrés dans **IndexedDB** ; les images sont s
 | **Corbeille** | Permet de restaurer une page mise de côté. |
 
 > [!IMPORTANT]
-> Le stockage est propre au navigateur et à l’adresse du site. Il n’y a pas de synchronisation automatique entre appareils. Effacer les données du site peut supprimer ta bibliothèque ; la navigation privée et l’éviction du stockage peuvent aussi la faire disparaître. **Garde régulièrement un export dans un emplacement sauvegardé.**
+> Attends **✓ Synchronisé** avant de changer d’appareil ou d’effacer les données du navigateur. Les modifications encore en attente existent uniquement sur cet appareil. **Garde aussi régulièrement un export dans un emplacement sauvegardé.**
 
 > [!NOTE]
 > Un import ajoute des copies : importer deux fois le même fichier crée des doublons. Les exports peuvent contenir tes informations personnelles ; conserve-les comme tes autres documents.
@@ -126,7 +130,7 @@ Les sujets et les pages sont enregistrés dans **IndexedDB** ; les images sont s
 
 **[Ouvrir Curio dans le navigateur →](https://feuille2cedric.github.io/culture-generale/)**
 
-Pas d’installation, de compte ou de clé API.
+Pas d’installation. Le compte par e-mail est facultatif et permet de retrouver tes contenus sur plusieurs appareils.
 
 ### Lancer une copie locale
 
@@ -146,7 +150,7 @@ Ouvre ensuite **http://127.0.0.1:3355**. Utilise le serveur local plutôt qu’u
 2. Dans **Settings → Pages → Build and deployment → Source**, sélectionne **GitHub Actions**.
 3. Lance le workflow **Deploy Curio to GitHub Pages**, ou pousse un commit sur `main`.
 
-Le [workflow inclus](.github/workflows/pages.yml) publie `index.html`, `app.js`, `categories.js`, `style.css` et `favicon.svg`. Les chemins relatifs fonctionnent sous l’adresse d’un dépôt GitHub Pages. Aucun build JavaScript ni serveur applicatif n’est nécessaire.
+Le [workflow inclus](.github/workflows/pages.yml) publie les fichiers de l’interface et les scripts du dossier `sync/`. Les chemins relatifs fonctionnent sous l’adresse d’un dépôt GitHub Pages. Aucun build JavaScript n’est nécessaire ; Supabase fournit l’authentification et le stockage privé.
 
 ## Sous le capot
 
@@ -155,6 +159,7 @@ Le [workflow inclus](.github/workflows/pages.yml) publie `index.html`, `app.js`,
 | Interface | HTML, CSS et JavaScript natif |
 | Typographie | Polices système et Georgia, sans police distante |
 | Stockage des connaissances | IndexedDB · base `curio-library` |
+| Synchronisation | Supabase Auth, PostgreSQL avec RLS, Storage privé |
 | Préférence de tri | `localStorage` · clé `curio-sort-order` |
 | Hébergement | GitHub Pages, déployé avec GitHub Actions |
 | Vérification | Scénarios de navigateur avec Python et Playwright |
@@ -183,6 +188,7 @@ python -m pip install playwright
 python test_app.py
 python test_sort.py
 python test_categories.py
+python test_sync.py
 ```
 
 Les scripts sont actuellement configurés pour **Google Chrome sous Windows**, au chemin `C:\Program Files\Google\Chrome\Application\chrome.exe`. Adapte `executable_path` si ton installation diffère. `test_sort.py` régénère les captures du dossier `docs/`.
