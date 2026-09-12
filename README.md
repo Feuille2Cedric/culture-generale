@@ -130,7 +130,7 @@ Pour configurer une autre installation : **[guide Supabase](sync/SETUP.md)**.
 
 **[Ouvrir Curio dans le navigateur →](https://feuille2cedric.github.io/culture-generale/)**
 
-Pas d’installation. Le compte par e-mail est facultatif et permet de retrouver tes contenus sur plusieurs appareils.
+Pas d’installation. Le compte avec e-mail et mot de passe est facultatif et permet de retrouver tes contenus sur plusieurs appareils. Si tu utilisais un lien par e-mail, ouvre **Mon compte → Définir ou changer mon mot de passe**. Les connexions suivantes n’envoient aucun e-mail. **Mot de passe oublié ?** permet de récupérer l’accès à un compte existant.
 
 ### Lancer une copie locale
 
@@ -189,6 +189,7 @@ python test_app.py
 python test_sort.py
 python test_categories.py
 python test_sync.py
+python test_auth.py
 ```
 
 Les scripts sont actuellement configurés pour **Google Chrome sous Windows**, au chemin `C:\Program Files\Google\Chrome\Application\chrome.exe`. Adapte `executable_path` si ton installation diffère. `test_sort.py` régénère les captures du dossier `docs/`.
