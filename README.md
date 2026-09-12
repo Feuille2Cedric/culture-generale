@@ -108,7 +108,9 @@ Pour configurer une autre installation : **[guide Supabase](sync/SETUP.md)**.
 > Attends **✓ Synchronisé** avant de changer d’appareil ou d’effacer les données du navigateur. Les modifications encore en attente existent uniquement sur cet appareil. **Garde aussi régulièrement un export dans un emplacement sauvegardé.**
 
 > [!NOTE]
-> Un import ajoute des copies : importer deux fois le même fichier crée des doublons. Les exports peuvent contenir tes informations personnelles ; conserve-les comme tes autres documents.
+> Un import de sauvegarde classique ajoute des copies : importer deux fois le même fichier crée des doublons. Les exports peuvent contenir tes informations personnelles ; conserve-les comme tes autres documents.
+
+Les **compléments Curio** ajoutent leurs connaissances aux sujets existants et conservent tes pages. Leurs sous-catégories sont fusionnées et les pages du complément déjà importées sont ignorées. Les pages et leurs images sont enregistrées ensemble : en cas d’échec, aucun ajout partiel n’est conservé. Ils s’importent avec le même bouton **Importer**.
 
 <details>
 <summary><strong>Formats, limites et compatibilité</strong></summary>

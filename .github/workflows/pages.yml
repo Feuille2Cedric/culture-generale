@@ -21,7 +21,7 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir _site
-          cp index.html app.js categories.js style.css favicon.svg _site/
+          cp index.html app.js categories.js supplements.js style.css favicon.svg _site/
           mkdir _site/sync
           cp sync/config.js sync/auth.js sync/supabase.js sync/sync.js sync/adapter.js sync/sync.css _site/sync/
       - uses: actions/configure-pages@v5
