@@ -57,7 +57,9 @@ Les sous-catégories sont sauvegardées et incluses dans les exports/imports. Po
 Crée un sujet, donne-lui un nom, une description et une couleur. Astronomie, cinéma, botanique : la bibliothèque suit tes envies.
 
 **02 · Donner forme à une idée**<br>
-Choisis un format, puis compose ta page avec l’éditeur par blocs. Ajoute du texte, des titres, des citations, des images et des liens. Déplace les blocs avec les flèches, ajuste la largeur et l’alignement des images, et ajoute leurs légendes.
+Choisis un format, puis compose ta page avec l’éditeur par blocs. Ajoute du texte, des titres, des citations, des images et des liens. Glisse la poignée **Déplacer** à la souris ou au toucher ; au clavier, utilise les flèches, Début ou Fin sur cette poignée. Échap annule un déplacement en cours.
+
+Colle une image copiée avec **Ctrl + V** (ou **Cmd + V**) dans l’éditeur : elle s’insère après le bloc actif, sans fichier à télécharger. Dans un bloc image, **Remplacer** choisit un fichier et **Coller à la place** utilise le presse-papiers. La légende et la disposition sont conservées. Si le navigateur refuse l’accès au presse-papiers, garde le bouton actif et utilise le raccourci de collage.
 
 **03 · Enregistrer et relire**<br>
 Le bouton **Enregistrer**, au bas de l’éditeur, sauvegarde puis ouvre la vue de lecture. **Modifier** te ramène à l’écriture. Une sauvegarde automatique protège aussi tes modifications pendant l’édition.
@@ -168,37 +170,23 @@ Le [workflow inclus](.github/workflows/pages.yml) publie les fichiers de l’int
 | Synchronisation | Supabase Auth, PostgreSQL avec RLS, Storage privé |
 | Préférence de tri | `localStorage` · clé `curio-sort-order` |
 | Hébergement | GitHub Pages, déployé avec GitHub Actions |
-| Vérification | Scénarios de navigateur avec Python et Playwright |
 
 ```text
 culture-generale/
 ├── index.html              Structure de l’application
 ├── app.js                  Édition, lecture, tri et stockage
 ├── categories.js           Sous-catégories et reprise des classements Notion
+├── editor-tools.js         Déplacement tactile, collage et remplacement d’images
+├── supplements.js          Import des compléments et regroupement des sujets
 ├── style.css               Identité visuelle et affichage mobile
 ├── favicon.svg             Icône Curio
 ├── docs/                   Visuels du README avec contenus de démonstration
-├── test_app.py             Parcours, sauvegardes et compatibilité
-├── test_sort.py            Tri et captures de démonstration
-├── test_categories.py      Classement, filtres et compatibilité des sauvegardes
+├── sync/                   Synchronisation, configuration et schéma Supabase
 └── .github/workflows/
     └── pages.yml           Publication automatique
 ```
 
-### Vérifier les parcours
-
-Les tests utilisent un navigateur isolé et des données de démonstration. Ils couvrent notamment l’édition, les images, la lecture, les trois formats, l’export/import, les conflits entre fenêtres, les erreurs de sauvegarde et le tri.
-
-```bash
-python -m pip install playwright
-python test_app.py
-python test_sort.py
-python test_categories.py
-python test_sync.py
-python test_auth.py
-```
-
-Les scripts sont actuellement configurés pour **Google Chrome sous Windows**, au chemin `C:\Program Files\Google\Chrome\Application\chrome.exe`. Adapte `executable_path` si ton installation diffère. `test_sort.py` régénère les captures du dossier `docs/`.
+Le dépôt contient l’application, son déploiement et sa documentation. Les outils temporaires, scripts de test et fichiers d’import personnels ne sont pas nécessaires à son fonctionnement et ne sont pas distribués avec le site.
 
 ---
 
